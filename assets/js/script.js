@@ -20,51 +20,60 @@ function locRecall() {
 }
 
 function getCurrentWeather() {
-  
+
   $("#locSearch").click(function () {
     let str = $("#userInput").val();
     let weatherUrl = fetch('https://api.openweathermap.org/data/2.5/weather?q=' + str + '&appid=' + apiKey + '&units=imperial')
-    .then(function(response) {
-      return (response.json());
-    })
-    .then(function(response) {
-      let cityName = document.querySelector(".cityName");
-      cityName.textContent = "(" + response.name + ") - "
-      let cityDate = document.querySelector(".currentDate");
-      cityDate.textContent = currDate
-      let cityTemp = document.querySelector(".cityTemp");
-      cityTemp.textContent = Math.floor(response.main.temp) + " °F"
-      let cityHum = document.querySelector(".cityHumidity");
-      cityHum.textContent = response.main.humidity + "%" 
-      let cityWind = document.querySelector(".cityWind");
-      cityWind.textContent = response.wind.speed + " MPH"
-      let cityUv = document.querySelector(".uvIndex");
-      cityUv.textContent = response.coord.lon
-      
-      
-    })
-    
+      .then(function (response) {
+        return (response.json());
+      })
+      .then(function (response) {
+        let cityName = document.querySelector(".cityName");
+        cityName.textContent = "(" + response.name + ") - "
+        let cityDate = document.querySelector(".currentDate");
+        cityDate.textContent = currDate
+        let cityTemp = document.querySelector(".cityTemp");
+        cityTemp.textContent = Math.floor(response.main.temp) + " °F"
+        let cityHum = document.querySelector(".cityHumidity");
+        cityHum.textContent = response.main.humidity + "%"
+        let cityWind = document.querySelector(".cityWind");
+        cityWind.textContent = response.wind.speed + " MPH"
+        let cityUv = document.querySelector(".uvIndex");
+        cityUv.textContent = response.coord.lon
+        console.log(response)
+
+      });
+
+      let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + str + '&APPID=' + apiKey + '&units=imperial')
+      .then(function (response) {
+        return (response.json())
+      })
+      .then(function (test) {
+        console.log(test);
+      })
+
+
 
   });
 
 };
 
-function getFiveDayForecast() {
+// function getFiveDayForecast() {
 
-$("#locSearch").click(function () { 
-  let str = $("#userInput").val();
-  let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + str + '&APPID=' + apiKey + '&units=imperial')
-  .then(function(response) {
-    return (response.json())
-  })
-  .then(function(test) {
-    console.log(test);
-  })
-  
-  })
-} 
+//   $("#locSearch").click(function () {
+//     let strfive = $("#userInput").val();
+//     let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + strfive + '&APPID=' + apiKey + '&units=imperial')
+//       .then(function (response) {
+//         return (response.json())
+//       })
+//       .then(function (test) {
+//         console.log(test);
+//       })
+
+//   })
+// }
 
 
 getCurrentWeather();
 locRecall();
-getFiveDayForecast();
+// getFiveDayForecast();
