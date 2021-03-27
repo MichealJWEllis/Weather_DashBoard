@@ -3,12 +3,13 @@ const fiveApiKey = "479b9c1f7ac985105fde50a940545820"
 const currDate = moment().format('MMM Do YYYY');
 const dateFiveDay = moment().format('MM/DD/YY')
 const citySearch = $("#userInput").val();
-let lon = 0;
-let lat = 0;
+let lon;
+let lat;
+let str = '';
 
 function locRecall() {
   $("#locSearch").click(function () {
-    let str = $("#userInput").val();
+    str = $("#userInput").val();
     let caps = str.toUpperCase();
 
     if (str === '') {
@@ -24,7 +25,7 @@ function locRecall() {
 function getCurrentWeather() {
 
   $("#locSearch").click(function () {
-    let str = $("#userInput").val();
+    str = $("#userInput").val();
     let weatherUrl = fetch('https://api.openweathermap.org/data/2.5/weather?q=' + str + '&appid=' + apiKey + '&units=imperial')
       .then(function (response) {
         return (response.json());
@@ -43,18 +44,30 @@ function getCurrentWeather() {
         // let cityUv = document.querySelector(".uvIndex");
         lon = response.coord.lon
         lat = response.coord.lat
-        // console.log(response)
+        // console.log(lat, lon)
 
-      });
+      })
+      .then(function () {
+        let uvUrl = fetch('http://api.openweathermap.org/data/2.5/uvi?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial')
+          .then(function (response) {
+            return (response.json())
+          })
+          .then(function (uv) {
+            let cityUv = document.querySelector(".uvIndex");
+            cityUv.textContent = Math.floor(uv.value)
+          })
 
-      let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + str + '&APPID=' + apiKey + '&units=imperial')
+      })
+
+    // 5 day forecast
+    let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + str + '&APPID=' + apiKey + '&units=imperial')
       .then(function (response) {
         return (response.json())
       })
       .then(function (test) {
         // console.log(test);
-
-        for(let i = 0; i != test.list.length; i+=8) {
+        $(".fiveForecast").html('');
+        for (let i = 0; i != test.list.length; i += 8) {
           // console.log(test.list[i])
           let aDate = test.list[i].dt_txt;
           let bDate = aDate.slice(0, 10)
@@ -66,25 +79,22 @@ function getCurrentWeather() {
           let bIcon = 'https://openweathermap.org/img/w/' + aIcon + '.png'
           // console.log(aHum)
           // console.log(fiveDate)
-          $(".fiveForecast").append('<div class="card col m-2 fiveDay"><div class="card-body"><h5 class="card-title">'+ fiveDate + '</h5><img src=' + bIcon + '><p class="card-text">Temperature: ' + bTemp + '°F</p><p class="card-text">Humidity: ' + aHum + '%</p></div></div>')
+          $(".fiveForecast").append('<div class="card col m-2 fiveDay"><div class="card-body"><h5 class="card-title">' + fiveDate + '</h5><img src=' + bIcon + '><p class="card-text">Temperature: ' + bTemp + '°F</p><p class="card-text">Humidity: ' + aHum + '%</p></div></div>')
         }
       })
 
-      let uvUrl = fetch('http://api.openweathermap.org/data/2.5/uvi?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial')
-      .then(function (response) {
-        return (response.json())
-      })
-      .then(function (uv) {
-        // console.log(uv)
-        let cityUv = document.querySelector(".uvIndex");
-        cityUv.textContent = uv.value
-      })
+
   });
 
 };
 
+var a = document.getElementById('test')
+a.addEventListener('click', (event) => {
+  let str = $(event.target).text()
+  console.log(str)
+})
 
-
+// console.log(a);
 
 getCurrentWeather();
 locRecall();
