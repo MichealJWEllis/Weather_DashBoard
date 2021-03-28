@@ -65,18 +65,22 @@ function getCurrentWeather() {
             // console.log(typeof a);
             if (a < 3) {
               $("span.uvIndex").addClass("lowUv")
+              $("span.uvIndex").append(" Low");
             } else if (a >= 3 && a <= 5) {
-
               $("span.uvIndex").addClass("medUv")
+              $("span.uvIndex").append(" Moderate");
             } else if (a === 6 || a === 7) {
-
               $("span.uvIndex").addClass("highUv")
+              $("span.uvIndex").append(" High");
             } else if (a >= 8 && a <= 10) {
-
               $("span.uvIndex").addClass("vHighUv")
+              $("span.uvIndex").append(" Very High");
             } else {
-
               $("span.uvIndex").addClass("exHighUv")
+              $("span.uvIndex").append(" Extreme");
+
+
+
             }
 
 
@@ -124,9 +128,13 @@ var a = document.getElementById('test')
 a.addEventListener('click', (event) => {
   let str = $(event.target).text()
   console.log(str)
+  const result = Array.from(document.querySelectorAll('.lastLookUp'), ({ value }) => value);
+
+  console.log(result);
 })
 
 // console.log(a);
 
 getCurrentWeather();
 locRecall();
+
