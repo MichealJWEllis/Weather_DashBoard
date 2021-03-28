@@ -31,20 +31,26 @@ function getCurrentWeather() {
         return (response.json());
       })
       .then(function (response) {
-        let cityName = document.querySelector(".cityName");
-        cityName.textContent = "(" + response.name + ") - "
-        let cityDate = document.querySelector(".currentDate");
-        cityDate.textContent = currDate
-        let cityTemp = document.querySelector(".cityTemp");
-        cityTemp.textContent = Math.floor(response.main.temp) + " °F"
-        let cityHum = document.querySelector(".cityHumidity");
-        cityHum.textContent = response.main.humidity + "%"
-        let cityWind = document.querySelector(".cityWind");
-        cityWind.textContent = response.wind.speed + " MPH"
-        // let cityUv = document.querySelector(".uvIndex");
-        lon = response.coord.lon
-        lat = response.coord.lat
-        // console.log(lat, lon)
+        if (response.message === "city not found") {
+          alert("Please enter valid city");
+          location.reload();
+          location.stop();
+        } else {
+          let cityName = document.querySelector(".cityName");
+          cityName.textContent = "(" + response.name + ") - "
+          let cityDate = document.querySelector(".currentDate");
+          cityDate.textContent = currDate
+          let cityTemp = document.querySelector(".cityTemp");
+          cityTemp.textContent = Math.floor(response.main.temp) + " °F"
+          let cityHum = document.querySelector(".cityHumidity");
+          cityHum.textContent = response.main.humidity + "%"
+          let cityWind = document.querySelector(".cityWind");
+          cityWind.textContent = response.wind.speed + " MPH"
+          // let cityUv = document.querySelector(".uvIndex");
+          lon = response.coord.lon
+          lat = response.coord.lat
+          // console.log(lat, lon)
+        }
 
       })
       .then(function () {
@@ -55,6 +61,26 @@ function getCurrentWeather() {
           .then(function (uv) {
             let cityUv = document.querySelector(".uvIndex");
             cityUv.textContent = Math.floor(uv.value)
+            let a = parseInt(cityUv.textContent)
+            // console.log(typeof a);
+            if (a < 3) {
+              $("span.uvIndex").addClass("lowUv")
+            } else if (a >= 3 && a <= 5) {
+
+              $("span.uvIndex").addClass("medUv")
+            } else if (a === 6 || a === 7) {
+
+              $("span.uvIndex").addClass("highUv")
+            } else if (a >= 8 && a <= 10) {
+
+              $("span.uvIndex").addClass("vHighUv")
+            } else {
+
+              $("span.uvIndex").addClass("exHighUv")
+            }
+
+
+
           })
 
       })
@@ -65,22 +91,28 @@ function getCurrentWeather() {
         return (response.json())
       })
       .then(function (test) {
-        // console.log(test);
-        $(".fiveForecast").html('');
-        for (let i = 0; i != test.list.length; i += 8) {
-          // console.log(test.list[i])
-          let aDate = test.list[i].dt_txt;
-          let bDate = aDate.slice(0, 10)
-          let fiveDate = moment(bDate).format('MM/DD/YY');
-          let aTemp = test.list[i].main.temp;
-          let bTemp = Math.floor(aTemp)
-          let aHum = test.list[i].main.humidity
-          let aIcon = test.list[i].weather[0].icon
-          let bIcon = 'https://openweathermap.org/img/w/' + aIcon + '.png'
-          // console.log(aHum)
-          // console.log(fiveDate)
-          $(".fiveForecast").append('<div class="card col m-2 fiveDay"><div class="card-body"><h5 class="card-title">' + fiveDate + '</h5><img src=' + bIcon + '><p class="card-text">Temperature: ' + bTemp + '°F</p><p class="card-text">Humidity: ' + aHum + '%</p></div></div>')
+        if (test.message === "city not found") {
+          alert("Please enter valid city")
+          // location.reload();
+        } else {
+          // console.log(typeof test.message);
+          $(".fiveForecast").html('');
+          for (let i = 0; i != test.list.length; i += 8) {
+            // console.log(test.list[i])
+            let aDate = test.list[i].dt_txt;
+            let bDate = aDate.slice(0, 10)
+            let fiveDate = moment(bDate).format('MM/DD/YY');
+            let aTemp = test.list[i].main.temp;
+            let bTemp = Math.floor(aTemp)
+            let aHum = test.list[i].main.humidity
+            let aIcon = test.list[i].weather[0].icon
+            let bIcon = 'https://openweathermap.org/img/w/' + aIcon + '.png'
+            // console.log(aHum)
+            // console.log(fiveDate)
+            $(".fiveForecast").append('<div class="card col m-2 fiveDay"><div class="card-body"><h5 class="card-title">' + fiveDate + '</h5><img src=' + bIcon + '><p class="card-text">Temperature: ' + bTemp + '°F</p><p class="card-text">Humidity: ' + aHum + '%</p></div></div>')
+          }
         }
+
       })
 
 
