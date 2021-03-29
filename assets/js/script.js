@@ -1,12 +1,14 @@
+// API Key
 const apiKey = "b773ba3167fd9791028d0f0f123759cc";
-const fiveApiKey = "479b9c1f7ac985105fde50a940545820"
+// Time format
 const currDate = moment().format('MMM Do YYYY');
-const dateFiveDay = moment().format('MM/DD/YY')
+const dateFiveDay = moment().format('MM/DD/YY');
+// User input
 const citySearch = $("#userInput").val();
 let lon;
 let lat;
 let str = '';
-
+// Function used to create li elements for previous searches
 function locRecall() {
   $("#locSearch").click(function () {
     str = $("#userInput").val();
@@ -21,9 +23,9 @@ function locRecall() {
     }
   })
 }
-
+// Fuction to generate the current weather
 function getCurrentWeather() {
-
+  // fetch for current weather
   $("#locSearch").click(function () {
     str = $("#userInput").val();
     let weatherUrl = fetch('https://api.openweathermap.org/data/2.5/weather?q=' + str + '&appid=' + apiKey + '&units=imperial')
@@ -46,12 +48,10 @@ function getCurrentWeather() {
           cityHum.textContent = response.main.humidity + "%"
           let cityWind = document.querySelector(".cityWind");
           cityWind.textContent = response.wind.speed + " MPH"
-          // let cityUv = document.querySelector(".uvIndex");
           lon = response.coord.lon
           lat = response.coord.lat
-          // console.log(lat, lon)
         }
-
+        // fetch for uvIndex
       })
       .then(function () {
         let uvUrl = fetch('http://api.openweathermap.org/data/2.5/uvi?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial')
@@ -62,7 +62,7 @@ function getCurrentWeather() {
             let cityUv = document.querySelector(".uvIndex");
             cityUv.textContent = Math.floor(uv.value)
             let a = parseInt(cityUv.textContent)
-            // console.log(typeof a);
+            // uvIndex color coding 
             if (a < 3) {
               $("span.uvIndex").addClass("lowUv")
               $("span.uvIndex").append(" Low");
@@ -78,18 +78,10 @@ function getCurrentWeather() {
             } else {
               $("span.uvIndex").addClass("exHighUv")
               $("span.uvIndex").append(" Extreme");
-
-
-
             }
-
-
-
           })
-
       })
-
-    // 5 day forecast
+    // 5 day forecast fetch
     let queryUrl = fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + str + '&APPID=' + apiKey + '&units=imperial')
       .then(function (response) {
         return (response.json())
@@ -111,30 +103,31 @@ function getCurrentWeather() {
             let aHum = test.list[i].main.humidity
             let aIcon = test.list[i].weather[0].icon
             let bIcon = 'https://openweathermap.org/img/w/' + aIcon + '.png'
-            // console.log(aHum)
-            // console.log(fiveDate)
             $(".fiveForecast").append('<div class="card col m-2 fiveDay"><div class="card-body"><h5 class="card-title">' + fiveDate + '</h5><img src=' + bIcon + '><p class="card-text">Temperature: ' + bTemp + '°F</p><p class="card-text">Humidity: ' + aHum + '%</p></div></div>')
           }
         }
-
       })
-
-
   });
-
 };
-
-var a = document.getElementById('test')
-a.addEventListener('click', (event) => {
-  let str = $(event.target).text()
-  console.log(str)
-  const result = Array.from(document.querySelectorAll('.lastLookUp'), ({ value }) => value);
-
-  console.log(result);
-})
-
-// console.log(a);
-
 getCurrentWeather();
 locRecall();
+
+
+// Didn't figure out how to use the DOM to recall previous searches. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
